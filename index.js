@@ -6,9 +6,12 @@ const
     bodyParser = require('body-parser'),
     app = express().use(bodyParser.json()); // creates express http server
 
+
+const config = require("./services/config");
+
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 5000, () => console.log('webhook is listening'));
-let pairs = [[]]; // multiple pairs
+let pairs = {}; // multiple pairs
 
 // Creates the endpoint for our webhook
 app.post('/webhook', (req, res) => {
@@ -39,8 +42,7 @@ app.post('/webhook', (req, res) => {
 app.get('/webhook', (req, res) => {
 
     // Your verify token. Should be a random string.
-    let VERIFY_TOKEN = "EAAjZAZBZC6OgJgBAO1P3dOLnBjosyCPH96yWP3liWj2upkhhEm8vEBpysy1XOCN78AicSKsl6ZCodLHx4Roud69wFkpkc3U2BrIbmyfL4mXLx8SatPmTgGvF416sWemASVYE29qwU8HjBFCVqomyXFuYvE7Dyysu2ozxgIyB0gZDZD";
-
+    let VERIFY_TOKEN = "verified";
     // Parse the query params
     let mode = req.query['hub.mode'];
     let token = req.query['hub.verify_token'];
@@ -76,7 +78,8 @@ app.get('/webhook', (req, res) => {
 
 function handleMessage(sender_psid, received_message) {
     let response;
-    for()
+    pairs[user1.pid] = user2;
+    pairs[user2.pid] = user1;
 
     // Checks if the message contains text
     if (received_message.text) {
@@ -148,7 +151,7 @@ function callSendAPI(sender_psid, response) {
     // Send the HTTP request to the Messenger Platform
     request({
         "uri": "https://graph.facebook.com/v2.6/me/messages",
-        "qs": { "access_token": PAGE_ACCESS_TOKEN },
+        "qs": { "access_token": PAGE_TOKEN },
         "method": "POST",
         "json": request_body
     }, (err, res, body) => {
@@ -160,9 +163,37 @@ function callSendAPI(sender_psid, response) {
     });
 }
 
+function makePair(user1, user2){
+    pairs[user1.pid] = user2;
+    pairs[user2.pid] = user1;
+}
 function addNewUser(user){
 
 }
 function compareUsers(user1, user2){
 
 }
+
+var listener = app.listen(config.port, function() {
+    console.log("Your app is listening on port " + listener.address().port);
+
+    if (
+        Object.keys(config.personas).length == 0 &&
+        config.appUrl &&
+        config.verifyToken
+    ) {
+        console.log(
+            "Is this the first time running?\n" +
+            "Make sure to set the both the Messenger profile, persona " +
+            "and webhook by visiting:\n" +
+            config.appUrl +
+            "/profile?mode=all&verify_token=" +
+            config.verifyToken
+        );
+    }
+
+    if (config.pageId) {
+        console.log("Test your app by messaging:");
+        console.log("https://m.me/" + config.pageId);
+    }
+});
