@@ -8,6 +8,7 @@ const
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 5000, () => console.log('webhook is listening'));
+let pairs = [[]]; // multiple pairs
 
 // Creates the endpoint for our webhook
 app.post('/webhook', (req, res) => {
