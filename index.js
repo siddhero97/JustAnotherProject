@@ -38,7 +38,7 @@ app.post('/webhook', (req, res) => {
 app.get('/webhook', (req, res) => {
 
     // Your verify token. Should be a random string.
-    let VERIFY_TOKEN = "EAAjZAZBZC6OgJgBAO1P3dOLnBjosyCPH96yWP3liWj2upkhhEm8vEBpysy1XOCN78AicSKsl6ZCodLHx4Roud69wFkpkc3U2BrIbmyfL4mXLx8SatPmTgGvF416sWemASVYE29qwU8HjBFCVqomyXFuYvE7Dyysu2ozxgIyB0gZDZD"
+    let VERIFY_TOKEN = "EAAjZAZBZC6OgJgBAO1P3dOLnBjosyCPH96yWP3liWj2upkhhEm8vEBpysy1XOCN78AicSKsl6ZCodLHx4Roud69wFkpkc3U2BrIbmyfL4mXLx8SatPmTgGvF416sWemASVYE29qwU8HjBFCVqomyXFuYvE7Dyysu2ozxgIyB0gZDZD";
 
     // Parse the query params
     let mode = req.query['hub.mode'];
@@ -60,4 +60,15 @@ app.get('/webhook', (req, res) => {
             res.sendStatus(403);
         }
     }
+});
+
+const login = require("facebook-chat-api");
+
+// Create simple echo bot
+login({email: "FB_EMAIL", password: "FB_PASSWORD"}, (err, api) => {
+    if(err) return console.error(err);
+
+    api.listen((err, message) => {
+        api.sendMessage(message.body, message.threadID);
+    });
 });
