@@ -12,7 +12,7 @@ const config = require("./services/config");
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 5000, () => console.log('webhook is listening'));
 let pairs = {}; // multiple pairs
-
+let users = {};
 // Creates the endpoint for our webhook
 app.post('/webhook', (req, res) => {
 
@@ -163,22 +163,78 @@ function callSendAPI(sender_psid, response) {
     });
 }
 
+static async getUserProfile(senderPsid) {
+    try {
+        const userProfile = await this.callUserProfileAPI(senderPsid);
+
+        for (const key in userProfile) {
+            const camelizedKey = camelCase(key);
+            const value = userProfile[key];
+            delete userProfile[key];
+            userProfile[camelizedKey] = value;
+        }
+
+        return userProfile;
+    } catch (err) {
+        console.log("Fetch failed:", err);
+    }
+}
+
+
+
+function callUserProfileAPI(senderPsid) {
+    return new Promise(function(resolve, reject) {
+        let body = [];
+
+        // Send the HTTP request to the Graph API
+        request({
+            uri: `${config.mPlatfom}/${senderPsid}`,
+            qs: {
+                access_token: config.pageAccesToken,
+                fields: "first_name, last_name, gender, locale, timezone"
+            },
+            method: "GET"
+        })
+            .on("response", function(response) {
+                // console.log(response.statusCode);
+
+                if (response.statusCode !== 200) {
+                    reject(Error(response.statusCode));
+                }
+            })
+            .on("data", function(chunk) {
+                body.push(chunk);
+            })
+            .on("error", function(error) {
+                console.error("Unable to fetch profile:" + error);
+                reject(Error("Network Error"));
+            })
+            .on("end", () => {
+                body = Buffer.concat(body).toString();
+                // console.log(JSON.parse(body));
+
+                resolve(JSON.parse(body));
+            });
+    });
+}
+
 function makePair(user1, user2){
     pairs[user1.pid] = user2;
     pairs[user2.pid] = user1;
 }
-function addNewUser(user){
-
+function addNewUser(pid){
+    let temp = User(pid);
+    Users[pid] = temp;
 }
-function compareUsers(user1, user2){
-
+function compareUsers(user1){
+    for()
 }
 
 var listener = app.listen(config.port, function() {
     console.log("Your app is listening on port " + listener.address().port);
 
     if (
-        Object.keys(config.personas).length == 0 &&
+
         config.appUrl &&
         config.verifyToken
     ) {
