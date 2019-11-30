@@ -75,6 +75,7 @@ app.get('/webhook', (req, res) => {
 
 function handleMessage(sender_psid, received_message) {
     let response;
+    for()
 
     // Checks if the message contains text
     if (received_message.text) {
@@ -83,38 +84,39 @@ function handleMessage(sender_psid, received_message) {
         response = {
             "text": `You sent the message: "${received_message.text}". Now send me an attachment!`
         }
+
+
     } else if (received_message.attachments) {
         // Get the URL of the message attachment
-        let attachment_url = received_message.attachments[0].payload.url;
-        response = {
-            "attachment": {
-                "type": "template",
-                "payload": {
-                    "template_type": "generic",
-                    "elements": [{
-                        "title": "Is this the right picture?",
-                        "subtitle": "Tap a button to answer.",
-                        "image_url": attachment_url,
-                        "buttons": [
-                            {
-                                "type": "postback",
-                                "title": "Yes!",
-                                "payload": "yes",
-                            },
-                            {
-                                "type": "postback",
-                                "title": "No!",
-                                "payload": "no",
-                            }
-                        ],
-                    }]
-                }
-            }
+        response = received_message.attachments[0].payload.url;
+        // response = {
+        //     "attachment": {
+        //         "type": "template",
+        //         "payload": {
+        //             "template_type": "generic",
+        //             "elements": [{
+        //                 "title": "Is this the right picture?",
+        //                 "subtitle": "Tap a button to answer.",
+        //                 "image_url": attachment_url,
+        //                 "buttons": [
+        //                     {
+        //                         "type": "postback",
+        //                         "title": "Yes!",
+        //                         "payload": "yes",
+        //                     },
+        //                     {
+        //                         "type": "postback",
+        //                         "title": "No!",
+        //                         "payload": "no",
+        //                     }
+        //                 ],
+        //             }]
+        //         }
+        //     }
         }
-    }
+    callSendAPI(recive_psid, response);
 
     // Send the response message
-    callSendAPI(sender_psid, response);
 }
 
 function handlePostback(sender_psid, received_postback) {
@@ -158,6 +160,7 @@ function callSendAPI(sender_psid, response) {
 }
 
 function addNewUser(user){
+
 }
 function compareUsers(user1, user2){
 
