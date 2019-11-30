@@ -156,3 +156,10 @@ function callSendAPI(sender_psid, response) {
         }
     });
 }
+
+function addNewUser(user){
+    let newUser
+}
+function compareUsers(user1, user2){
+
+}
