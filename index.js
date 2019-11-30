@@ -31,10 +31,63 @@ app.post('/webhook', (req, res) => {
 
         // Returns a '200 OK' response to all requests
         res.status(200).send('EVENT_RECEIVED');
+    }
+    let webhookEvent = entry.messaging[0];
+    // console.log(webhookEvent);
+
+    // Discard uninteresting events
+    if ("read" in webhookEvent) {
+        // console.log("Got a read event");
+        return;
+    }
+
+    if ("delivery" in webhookEvent) {
+        // console.log("Got a delivery event");
+        return;
+    }
+
+    // Get the sender PSID
+    let senderPsid = webhookEvent.sender.id;
+
+    if (!(senderPsid in users)) {
+        let user = new User(senderPsid);
+
+        GraphAPi.getUserProfile(senderPsid)
+            .then(userProfile => {
+                user.setProfile(userProfile);
+            })
+            .catch(error => {
+                // The profile is unavailable
+                console.log("Profile is unavailable:", error);
+            })
+            .finally(() => {
+                users[senderPsid] = user;
+                i18n.setLocale(user.locale);
+                console.log(
+                    "New Profile PSID:",
+                    senderPsid,
+                    "with locale:",
+                    i18n.getLocale()
+                );
+                let receiveMessage = new Receive(users[senderPsid], webhookEvent);
+                return receiveMessage.handleMessage();
+            });
     } else {
+        i18n.setLocale(users[senderPsid].locale);
+        console.log(
+            "Profile already exists PSID:",
+            senderPsid,
+            "with locale:",
+            i18n.getLocale()
+        );
+        let receiveMessage = new Receive(users[senderPsid], webhookEvent);
+        return receiveMessage.handleMessage();
+    }
+else {
         // Returns a '404 Not Found' if event is not from a page subscription
         res.sendStatus(404);
     }
+});
 
 });
 
@@ -52,7 +105,7 @@ app.get('/webhook', (req, res) => {
     if (mode && token) {
 
         // Checks the mode and token sent is correct
-        if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+        if (mode === 'subscribe' ) {
 
             // Responds with the challenge token from the request
             console.log('WEBHOOK_VERIFIED');
@@ -163,60 +216,21 @@ function callSendAPI(sender_psid, response) {
     });
 }
 
-static async getUserProfile(senderPsid) {
-    try {
-        const userProfile = await this.callUserProfileAPI(senderPsid);
 
-        for (const key in userProfile) {
-            const camelizedKey = camelCase(key);
-            const value = userProfile[key];
-            delete userProfile[key];
-            userProfile[camelizedKey] = value;
-        }
-
-        return userProfile;
-    } catch (err) {
-        console.log("Fetch failed:", err);
-    }
-}
-
-
-
-function callUserProfileAPI(senderPsid) {
-    return new Promise(function(resolve, reject) {
-        let body = [];
-
-        // Send the HTTP request to the Graph API
-        request({
-            uri: `${config.mPlatfom}/${senderPsid}`,
-            qs: {
-                access_token: config.pageAccesToken,
-                fields: "first_name, last_name, gender, locale, timezone"
-            },
-            method: "GET"
-        })
-            .on("response", function(response) {
-                // console.log(response.statusCode);
-
-                if (response.statusCode !== 200) {
-                    reject(Error(response.statusCode));
-                }
-            })
-            .on("data", function(chunk) {
-                body.push(chunk);
-            })
-            .on("error", function(error) {
-                console.error("Unable to fetch profile:" + error);
-                reject(Error("Network Error"));
-            })
-            .on("end", () => {
-                body = Buffer.concat(body).toString();
-                // console.log(JSON.parse(body));
-
-                resolve(JSON.parse(body));
-            });
-    });
-}
+// function callUserProfileAPI(senderPsid) {
+//     let body = [];
+//
+//     // Send the HTTP request to the Graph API
+//     ${config.mPlatfom}/${senderPsid}
+//     request({
+//         uri: `${config.mPlatfom}/${senderPsid}`,
+//         qs: {
+//             access_token: config.pageAccesToken,
+//             fields: "first_name, last_name, gender, locale, timezone"
+//         },
+//         method: "GET"
+//     })
+// }
 
 function makePair(user1, user2){
     pairs[user1.pid] = user2;
@@ -225,6 +239,10 @@ function makePair(user1, user2){
 function addNewUser(pid){
     let temp = User(pid);
     Users[pid] = temp;
+    // callUserProfileAPI(pid)
+    // temp = Users[pid];
+    // temp.setUsername(
+
 }
 function compareUsers(user1){
     for()

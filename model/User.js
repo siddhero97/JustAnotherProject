@@ -1,7 +1,7 @@
 "use strict";
 exports.__esModule = true;
 var User = /** @class */ (function () {
-    function User(pid, userName) {
+    function User(pid) {
         this.pid = pid;
         this.userName = userName;
     }

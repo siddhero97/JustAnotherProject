@@ -2,9 +2,8 @@ export class User{
     private pid: string;
     private userName: string;
 
-    public constructor(pid: string, userName: string) {
+    public constructor(pid: string) {
         this.pid = pid;
-        this.userName = userName;
     }
 
     public getPid(): string {
