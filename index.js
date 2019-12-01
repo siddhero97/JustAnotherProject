@@ -86,11 +86,11 @@ app.post('/webhook', (req, res) => {
                     addHobbies(message.text, users[senderPsid]);
                     console.log(users[senderPsid].getHobbies());
                     let temp = compareUsers(user1);
-                    makePair(user1, temp)
+                    // makePair(user1, temp)
 
                 }
-                else if(event.message){
-                    handleMessage(senderPsid, event.message);
+                else if(webhookEvent.message){
+                    handleMessage(senderPsid, webhookEvent.message);
                 }
             }
         });
@@ -257,7 +257,7 @@ function addNewUser(pid){
     // callUserProfileAPI(pid)
     // temp = Users[pid];
     // temp.setUsername(
-    callSendApi(pid,"Please list your interests");
+    callSendAPI(pid,"Please list your interests");
 
 
 
