@@ -85,7 +85,7 @@ app.post('/webhook', (req, res) => {
                 if(users[senderPsid].getrec() == true){
                     addHobbies(webhookEvent.message.text, users[senderPsid]);
                     console.log(users[senderPsid].getHobbies());
-                    let temp = compareUsers(user1);
+                    let temp = compareUsers(users[senderPsid]);
                     // makePair(user1, temp)
                     users[senderPsid].setrec(false);
 
