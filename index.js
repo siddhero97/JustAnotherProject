@@ -37,7 +37,6 @@ app.post('/webhook', (req, res) => {
             console.log("inside the for each loop of body entry");
             // Gets the message. entry.messaging is an array, but
             // will only ever contain one message, so we get index 0
-            let webhook_event = entry.messaging[0];
             console.log("webhook_event is ",webhook_event);
             let webhookEvent = entry.messaging[0];
 
@@ -59,6 +58,7 @@ app.post('/webhook', (req, res) => {
                 if(users[senderPsid].getrec() == true){
                     addHobbies(message.text, users[senderPsid]);
                     console.log(users[senderPsid].getHobbies());
+                    
 
                 }
                 else if(event.message){
@@ -224,7 +224,7 @@ function makePair(user1, user2){
     pairs[user2.pid] = user1;
 }
 function addNewUser(pid){
-    let temp = User(pid);
+    let temp = new User(pid);
     users[pid] = temp;
     // callUserProfileAPI(pid)
     // temp = Users[pid];
