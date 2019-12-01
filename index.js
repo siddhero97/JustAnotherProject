@@ -286,7 +286,7 @@ function addHobbies(stringArrayHobbies,user){
         if(hobbies.includes(stringHobby)) {
             categories[hobbies.indexOf(stringHobby)].addUser(user);
         }else {
-            let category = new Category(stringHobby);
+            let category = new Category.Catgory(stringHobby);
             Category.addUser(user);
             categories.push(category);
         }
