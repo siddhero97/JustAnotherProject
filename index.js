@@ -55,10 +55,6 @@ app.post('/webhook', (req, res) => {
         // console.log("Got a delivery event");
         return;
     }
-    else {
-        // Returns a '404 Not Found' if event is not from a page subscription
-        res.sendStatus(404);
-    }
 
     // Get the sender PSID
     let senderPsid = webhookEvent.sender.id;
@@ -71,7 +67,7 @@ app.post('/webhook', (req, res) => {
         // let receiveMessage = new Receive(users[senderPsid], webhookEvent);
         // return receiveMessage.handleMessage();
         if(users[senderPsid].getrec() == true){
-            addHobbies(message.text);
+            addHobbies(message.text, users[senderPsid]);
             console.log(users[senderPsid].getHobbies());
             
         }
