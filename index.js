@@ -7,7 +7,7 @@ const
     bodyParser = require('body-parser'),
     app = express().use(bodyParser.json()), // creates express http server
     request = require("request"),
-    User = require("./model/User");
+    User = require("./model/User"),
     Category = require("./model/Category");
 
 // TODO: Key should be somewhere more secure
