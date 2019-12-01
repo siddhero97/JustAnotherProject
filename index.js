@@ -6,6 +6,9 @@ const
     bodyParser = require('body-parser'),
     app = express().use(bodyParser.json()); // creates express http server
 
+// TODO: Put in real Yandex key
+const YANDEX_KEY = "dummy-key"
+const translate = require(yandex-translate)(YANDEX_KEY)
 
 const config = require("./services/config");
 
@@ -246,6 +249,11 @@ function addNewUser(pid){
 }
 function compareUsers(user1){
     for()
+}
+
+function translator(message, lang){
+    // TODO: Implement after Ray redoes the server stuff
+    return message
 }
 
 var listener = app.listen(config.port, function() {
