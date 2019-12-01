@@ -27,6 +27,7 @@ let categories = [{}];
 app.post('/webhook', (req, res) => {
 
     let body = req.body;
+    console.log("bare minimum");
     // Checks this is an event from a page subscription
     if (body.object === 'page') {
         console.log("inside body.object === page")
@@ -251,7 +252,7 @@ function makePair(user1, user2){
     pairs[user2.pid] = user1;
 }
 function addNewUser(pid){
-    let temp = new User(pid);
+    let temp = new User.User(pid);
     users[pid] = temp;
     // callUserProfileAPI(pid)
     // temp = Users[pid];
