@@ -29,28 +29,31 @@ app.post('/webhook', (req, res) => {
     let body = req.body;
     // Checks this is an event from a page subscription
     if (body.object === 'page') {
-
+        console.log("inside body.object === page")
         // Iterates over each entry - there may be multiple if batched
+        console.log("body is ", body);
+        console.log("body-entry is ",body.entry);
         body.entry.forEach(function(entry) {
-
+            console.log("inside the for each loop of body entry");
             // Gets the message. entry.messaging is an array, but
             // will only ever contain one message, so we get index 0
             let webhook_event = entry.messaging[0];
-            console.log(webhook_event);
+            console.log("webhook_event is ",webhook_event);
         });
 
         // Returns a '200 OK' response to all requests
         res.status(200).send('EVENT_RECEIVED');
     }
-    let webhookEvent = entry.messaging[0];
-    console.log(webhookEvent);
+    let webhookEvent = body.entry.messaging;
+    console.log("webhookEvent" ,webhookEvent);
+    console.log("webhookEvent[0]", webhookEvent[0]);
 
 
     // Discard uninteresting events
 
     // Get the sender PSID
     let senderPsid = webhookEvent.sender.id;
-
+    console.log("senderPsid " ,senderPsid);
     if (!(senderPsid in users)) {
         addNewUser(senderPsid);
 
