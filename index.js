@@ -187,7 +187,7 @@ function callSendAPI(sender_psid, response) {
             "id": sender_psid
         },
         "message": response
-    }
+    };
 
     // Send the HTTP request to the Messenger Platform
     request({
@@ -247,10 +247,14 @@ function compareUsers(user1){
     return null;
 }
 
-function addHobbies(stringArrayHobbies){
+function addHobbies(stringArrayHobbies,user){
     for(let stringHobby of stringArrayHobbies) {
         if(hobbies.includes(stringHobby)) {
-            categories[hobbies.indexOf()]
+            categories[hobbies.indexOf(stringHobby)].addUser(user);
+        }else {
+            let category = new Category(stringHobby);
+            category.addUser(user);
+            categories.push(category);
         }
 
     }
