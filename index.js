@@ -8,7 +8,7 @@ const
     app = express().use(bodyParser.json()), // creates express http server
     request = require("request"),
     User = require("./model/User");
-    // Category = require("./model/Category");
+    Category = require("./model/Category");
 
 // TODO: Key should be somewhere more secure
 const YANDEX_KEY = "trnsl.1.1.20191201T001652Z.0fca6bfecef65ae5."+
@@ -287,7 +287,7 @@ function addHobbies(stringArrayHobbies,user){
             categories[hobbies.indexOf(stringHobby)].addUser(user);
         }else {
             let category = new Category(stringHobby);
-            category.addUser(user);
+            Category.addUser(user);
             categories.push(category);
         }
 
