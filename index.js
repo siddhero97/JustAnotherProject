@@ -42,19 +42,11 @@ app.post('/webhook', (req, res) => {
         // Returns a '200 OK' response to all requests
         res.status(200).send('EVENT_RECEIVED');
     }
-    let webhookEvent = body.entry.messaging[0];
-    // console.log(webhookEvent);
+    let webhookEvent = entry.messaging[0];
+    console.log(webhookEvent);
+
 
     // Discard uninteresting events
-    if ("read" in webhookEvent) {
-        // console.log("Got a read event");
-        return;
-    }
-
-    if ("delivery" in webhookEvent) {
-        // console.log("Got a delivery event");
-        return;
-    }
 
     // Get the sender PSID
     let senderPsid = webhookEvent.sender.id;
