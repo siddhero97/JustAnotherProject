@@ -34,27 +34,53 @@ app.post('/webhook', (req, res) => {
         console.log("body is ", body);
         console.log("body-entry is ",body.entry);
         body.entry.forEach(function(entry) {
-            console.log("inside the for each loop of body entry");
-            // Gets the message. entry.messaging is an array, but
-            // will only ever contain one message, so we get index 0
-            console.log("webhook_event is ",webhook_event);
+            if ("changes" in entry) {
+                // Handle Page Changes event
+                let receiveMessage = new Receive();
+                if (entry.changes[0].field === "feed") {
+                    let change = entry.changes[0].value;
+                    switch (change.item) {
+                        case "post":
+                            return receiveMessage.handlePrivateReply(
+                                "post_id",
+                                change.post_id
+                            );
+                            break;
+                        case "comment":
+                            return receiveMessage.handlePrivateReply(
+                                "commentgity _id",
+                                change.comment_id
+                            );
+                            break;
+                        default:
+                            console.log('Unsupported feed change type.');
+                            return;
+                    }
+                }
+            }
+
+            // Gets the body of the webhook event
             let webhookEvent = entry.messaging[0];
-
-            console.log("webhookEvent" ,webhookEvent);
-            console.log("webhookEvent[0]", webhookEvent[0]);
-
+            console.log(webhookEvent);
 
             // Discard uninteresting events
+            if ("read" in webhookEvent) {
+                console.log("Got a read event");
+                return;
+            }
+
+            if ("delivery" in webhookEvent) {
+                console.log("Got a delivery event");
+                return;
+            }
 
             // Get the sender PSID
             let senderPsid = webhookEvent.sender.id;
-            console.log("senderPsid " ,senderPsid);
+
             if (!(senderPsid in users)) {
-                addNewUser(senderPsid);
-            }
-            else {
-                // let receiveMessage = new Receive(users[senderPsid], webhookEvent);
-                // return receiveMessage.handleMessage();
+                let user = new User(senderPsid);
+
+            } else {
                 if(users[senderPsid].getrec() == true){
                     addHobbies(message.text, users[senderPsid]);
                     console.log(users[senderPsid].getHobbies());
@@ -65,12 +91,12 @@ app.post('/webhook', (req, res) => {
                 else if(event.message){
                     handleMessage(senderPsid, event.message);
                 }
-
-        }});
-
-        // Returns a '200 OK' response to all requests
-
-    }
+            }
+        });
+    } else {
+        // Returns a '404 Not Found' if event is not from a page subscription
+        res.sendStatus(404);
+    }// Returns a '200 OK' response to all requests
 
 });
 
