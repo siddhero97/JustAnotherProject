@@ -79,7 +79,7 @@ app.post('/webhook', (req, res) => {
             let senderPsid = webhookEvent.sender.id;
 
             if (!(senderPsid in users)) {
-                let user = new User(senderPsid);
+                addNewUser(senderPsid);
 
             } else {
                 if(users[senderPsid].getrec() == true){
