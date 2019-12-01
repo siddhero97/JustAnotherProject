@@ -1,7 +1,7 @@
 "use strict";
 
-// Use dotenv to read .env vars into Node
-require("dotenv").config();
+// Use dotenv to read env.env vars into Node
+require("./env.env");
 
 // Required environment variables
 const ENV_VARS = [

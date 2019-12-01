@@ -15,7 +15,7 @@ const
 const YANDEX_KEY = "dummy-key";
 const translate = require("yandex-translate")(YANDEX_KEY);
 
-const config = require("./services/config");
+const config = require("./config");
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 5000, () => console.log('webhook is listening'));
@@ -64,7 +64,7 @@ app.post('/webhook', (req, res) => {
     let senderPsid = webhookEvent.sender.id;
 
     if (!(senderPsid in users)) {
-        let user = new User(senderPsid);
+        addNewUser(senderPsid);
 
 
     } else {
@@ -121,15 +121,16 @@ function handleMessage(user1, received_message) {
     let response;
     let user2;
     pairs[user1.pid] = user2;
+    if(!user2){
+        callSendAPI(user1, "Please wait while you are being matched")
+    }
     pairs[user2.pid] = user1;
 
     // Checks if the message contains text
     if (received_message.text) {
         // Create the payload for a basic text message, which
         // will be added to the body of our request to the Send API
-        response = {
-            "text": `You sent the message: "${received_message.text}". Now send me an attachment!`
-        }
+        response = received_message.text;
 
 
     } else if (received_message.attachments) {
