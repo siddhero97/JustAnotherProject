@@ -13,6 +13,9 @@ var User = /** @class */ (function () {
     User.prototype.getrec = function() {
         return this.reciving;
     };
+    User.prototype.setrec = function(bool) {
+        this.reciving = bool;
+    };
     User.prototype.getUserName = function () {
         return this.userName;
     };

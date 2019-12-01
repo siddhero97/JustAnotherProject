@@ -87,6 +87,7 @@ app.post('/webhook', (req, res) => {
                     console.log(users[senderPsid].getHobbies());
                     let temp = compareUsers(user1);
                     // makePair(user1, temp)
+                    users[senderPsid].setrec(false);
 
                 }
                 else if(webhookEvent.message){
@@ -219,7 +220,8 @@ function callSendAPI(sender_psid, response) {
     // Send the HTTP request to the Messenger Platform
     request({
         "uri": "https://graph.facebook.com/v2.6/me/messages",
-        "qs": { "access_token": PAGE_TOKEN},
+        "qs": { "access_token": "EAAjZAZBZC6OgJgBACkgUdAC3sS8IkFhqIAVZBdZAXwP1P4WcbsC9BdZAlxHbZA5QIsNBYqBMSNKSSt6q7o0IhGF76ZBmwTgoRZALfgaJtbwUqyCejy5RyszJmvrcjN1MuZCrKLG8Q7flZAmymHgw2VDkQSLU8mKRVW75JCE9ZBtXd0XSN5xIx5rQSTzm"
+        },
         "method": "POST",
         "json": request_body
     }, (err, res, body) => {
@@ -257,6 +259,7 @@ function addNewUser(pid){
     // callUserProfileAPI(pid)
     // temp = Users[pid];
     // temp.setUsername(
+    users[pid].setrec(true);
     callSendAPI(pid,"Please list your interests");
 
 
