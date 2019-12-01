@@ -10,10 +10,10 @@ const
     User = require("./model/User");
     // Category = require("./model/Category");
 
-
-// TODO: Put in real Yandex key
-const YANDEX_KEY = "dummy-key";
-const translate = require("yandex-translate")(YANDEX_KEY);
+// TODO: Key should be somewhere more secure
+const YANDEX_KEY = "trnsl.1.1.20191201T001652Z.0fca6bfecef65ae5."+
+    "31c828b9dd647dc4b25b13c2aa35342c1eaa3deb\n";
+const translate = require("yandex-translate")(YANDEX_KEY)
 
 const config = require("./services/config");
 
@@ -258,9 +258,15 @@ function addHobbies(stringArrayHobbies){
 }
 
 
-function translator(message, lang){
+function translator(message, from_lang, to_lang){
     // TODO: Implement after Ray redoes the server stuff
-    return message
+    translate.translate(message, { from: from_lang, to: to_lang }, function(err, res) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.text;
+        }
+    });
 }
 
 
