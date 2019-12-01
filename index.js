@@ -70,7 +70,12 @@ app.post('/webhook', (req, res) => {
     } else {
         // let receiveMessage = new Receive(users[senderPsid], webhookEvent);
         // return receiveMessage.handleMessage();
-        if(event.message){
+        if(users[senderPsid].getrec() == true){
+            addHobbies(message.text);
+            console.log(users[senderPsid].getHobbies());
+            
+        }
+        else if(event.message){
             handleMessage(senderPsid, event.message);
         }
     }
@@ -190,8 +195,6 @@ function callSendAPI(sender_psid, response) {
         },
         "message": response
     }
-
-    // Send the HTTP request to the Messenger Platform
     request({
         "uri": "https://graph.facebook.com/v2.6/me/messages",
         "qs": { "access_token": PAGE_TOKEN},
@@ -232,6 +235,9 @@ function addNewUser(pid){
     // callUserProfileAPI(pid)
     // temp = Users[pid];
     // temp.setUsername(
+    callSendApi(pid,"Please list your interests");
+
+
 
 }
 function compareUsers(user1){

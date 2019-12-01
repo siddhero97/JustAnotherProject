@@ -4,9 +4,13 @@ var User = /** @class */ (function () {
     function User(pid) {
         this.pid = pid;
         this.hobbies = [];
+        this.reciving = false;
     }
     User.prototype.getPid = function () {
         return this.pid;
+    };
+    User.prototype.getrec = function() {
+        return this.reciving;
     };
     User.prototype.getUserName = function () {
         return this.userName;
