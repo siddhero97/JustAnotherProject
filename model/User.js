@@ -5,6 +5,7 @@ var User = /** @class */ (function () {
         this.pid = pid;
         this.hobbies = [];
         this.reciving = false;
+        this.lang_code = "";
     }
     User.prototype.getPid = function () {
         return this.pid;
@@ -30,6 +31,12 @@ var User = /** @class */ (function () {
     User.prototype.addHobies = function (hobbies) {
         this.hobbies.concat(hobbies);
     };
+    User.prototype.getLangCode = function (lang) {
+        return this.lang_code;
+    }
+    User.prototype.setLangCode = function (code) {
+        this.lang_code = code;
+    }
     return User;
 }());
 exports.User = User;
