@@ -104,6 +104,7 @@ app.post('/webhook', (req, res) => {
 
 
 
+
 // Adds support for GET requests to our webhook
 app.get('/webhook', (req, res) => {
 
@@ -286,7 +287,7 @@ function addHobbies(stringArrayHobbies,user){
         if(hobbies.includes(stringHobby)) {
             categories[hobbies.indexOf(stringHobby)].addUser(user);
         }else {
-            let category = new Category.Catgory(stringHobby);
+            let category = new Category.Category(stringHobby);
             Category.addUser(user);
             categories.push(category);
         }
