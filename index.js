@@ -15,7 +15,7 @@ const YANDEX_KEY = "trnsl.1.1.20191201T001652Z.0fca6bfecef65ae5."+
     "31c828b9dd647dc4b25b13c2aa35342c1eaa3deb\n";
 const translate = require("yandex-translate")(YANDEX_KEY)
 
-const config = require("./services/config");
+const config = require("./config");
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 5000, () => console.log('webhook is listening'));
@@ -64,7 +64,7 @@ app.post('/webhook', (req, res) => {
     let senderPsid = webhookEvent.sender.id;
 
     if (!(senderPsid in users)) {
-        let user = new User(senderPsid);
+        addNewUser(senderPsid);
 
 
     } else {
@@ -121,15 +121,16 @@ function handleMessage(user1, received_message) {
     let response;
     let user2;
     pairs[user1.pid] = user2;
+    if(!user2){
+        callSendAPI(user1, "Please wait while you are being matched")
+    }
     pairs[user2.pid] = user1;
 
     // Checks if the message contains text
     if (received_message.text) {
         // Create the payload for a basic text message, which
         // will be added to the body of our request to the Send API
-        response = {
-            "text": `You sent the message: "${received_message.text}". Now send me an attachment!`
-        }
+        response = received_message.text;
 
 
     } else if (received_message.attachments) {
@@ -270,26 +271,4 @@ function translator(message, from_lang, to_lang){
 }
 
 
-var listener = app.listen(config.port, function() {
-    console.log("Your app is listening on port " + listener.address().port);
 
-    if (
-
-        config.appUrl &&
-        config.verifyToken
-    ) {
-        console.log(
-            "Is this the first time running?\n" +
-            "Make sure to set the both the Messenger profile, persona " +
-            "and webhook by visiting:\n" +
-            config.appUrl +
-            "/profile?mode=all&verify_token=" +
-            config.verifyToken
-        );
-    }
-
-    if (config.pageId) {
-        console.log("Test your app by messaging:");
-        console.log("https://m.me/" + config.pageId);
-    }
-});
