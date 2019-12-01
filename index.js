@@ -7,12 +7,13 @@ const
     bodyParser = require('body-parser'),
     app = express().use(bodyParser.json()), // creates express http server
     request = require("request"),
-    User = require("./model/User"),
-    Category = require("./model/Category");
+    User = require("./model/User");
+    // Category = require("./model/Category");
+
 
 // TODO: Put in real Yandex key
 const YANDEX_KEY = "dummy-key";
-const translate = require(yandex-translate)(YANDEX_KEY);
+const translate = require("yandex-translate")(YANDEX_KEY);
 
 const config = require("./services/config");
 
