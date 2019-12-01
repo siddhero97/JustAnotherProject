@@ -39,36 +39,36 @@ app.post('/webhook', (req, res) => {
             // will only ever contain one message, so we get index 0
             let webhook_event = entry.messaging[0];
             console.log("webhook_event is ",webhook_event);
-        });
+            let webhookEvent = entry.messaging[0];
+
+            console.log("webhookEvent" ,webhookEvent);
+            console.log("webhookEvent[0]", webhookEvent[0]);
+
+
+            // Discard uninteresting events
+
+            // Get the sender PSID
+            let senderPsid = webhookEvent.sender.id;
+            console.log("senderPsid " ,senderPsid);
+            if (!(senderPsid in users)) {
+                addNewUser(senderPsid);
+            }
+            else {
+                // let receiveMessage = new Receive(users[senderPsid], webhookEvent);
+                // return receiveMessage.handleMessage();
+                if(users[senderPsid].getrec() == true){
+                    addHobbies(message.text, users[senderPsid]);
+                    console.log(users[senderPsid].getHobbies());
+
+                }
+                else if(event.message){
+                    handleMessage(senderPsid, event.message);
+                }
+
+        }});
 
         // Returns a '200 OK' response to all requests
-        res.status(200).send('EVENT_RECEIVED');
-    }
-    let webhookEvent = body.entry.messaging;
-    console.log("webhookEvent" ,webhookEvent);
-    console.log("webhookEvent[0]", webhookEvent[0]);
 
-
-    // Discard uninteresting events
-
-    // Get the sender PSID
-    let senderPsid = webhookEvent.sender.id;
-    console.log("senderPsid " ,senderPsid);
-    if (!(senderPsid in users)) {
-        addNewUser(senderPsid);
-
-
-    } else {
-        // let receiveMessage = new Receive(users[senderPsid], webhookEvent);
-        // return receiveMessage.handleMessage();
-        if(users[senderPsid].getrec() == true){
-            addHobbies(message.text, users[senderPsid]);
-            console.log(users[senderPsid].getHobbies());
-            
-        }
-        else if(event.message){
-            handleMessage(senderPsid, event.message);
-        }
     }
 
 });
