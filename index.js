@@ -5,7 +5,10 @@
 const
     express = require('express'),
     bodyParser = require('body-parser'),
-    app = express().use(bodyParser.json()); // creates express http server
+    app = express().use(bodyParser.json()), // creates express http server
+    request = require("request"),
+    User = require("./model/User"),
+    Category = require("./model/Category");
 
 // TODO: Put in real Yandex key
 const YANDEX_KEY = "dummy-key";
@@ -38,7 +41,7 @@ app.post('/webhook', (req, res) => {
         // Returns a '200 OK' response to all requests
         res.status(200).send('EVENT_RECEIVED');
     }
-    let webhookEvent = entry.messaging[0];
+    let webhookEvent = body.entry.messaging[0];
     // console.log(webhookEvent);
 
     // Discard uninteresting events
@@ -51,6 +54,10 @@ app.post('/webhook', (req, res) => {
         // console.log("Got a delivery event");
         return;
     }
+    else {
+        // Returns a '404 Not Found' if event is not from a page subscription
+        res.sendStatus(404);
+    }
 
     // Get the sender PSID
     let senderPsid = webhookEvent.sender.id;
@@ -58,42 +65,18 @@ app.post('/webhook', (req, res) => {
     if (!(senderPsid in users)) {
         let user = new User(senderPsid);
 
-        GraphAPi.getUserProfile(senderPsid)
-            .then(userProfile => {
-                user.setProfile(userProfile);
-            })
-            .catch(error => {
-                // The profile is unavailable
-                console.log("Profile is unavailable:", error);
-            })
-            .finally(() => {
-                users[senderPsid] = user;
-                i18n.setLocale(user.locale);
-                console.log(
-                    "New Profile PSID:",
-                    senderPsid,
-                    "with locale:",
-                    i18n.getLocale()
-                );
-                let receiveMessage = new Receive(users[senderPsid], webhookEvent);
-                return receiveMessage.handleMessage();
-            });
+
     } else {
-        i18n.setLocale(users[senderPsid].locale);
-        console.log(
-            "Profile already exists PSID:",
-            senderPsid,
-            "with locale:",
-            i18n.getLocale()
-        );
-        let receiveMessage = new Receive(users[senderPsid], webhookEvent);
-        return receiveMessage.handleMessage();
+        // let receiveMessage = new Receive(users[senderPsid], webhookEvent);
+        // return receiveMessage.handleMessage();
+        if(event.message){
+            handleMessage(senderPsid, event.message);
+        }
     }
-else {
-        // Returns a '404 Not Found' if event is not from a page subscription
-        res.sendStatus(404);
-    }
+
 });
+
+
 
 // Adds support for GET requests to our webhook
 app.get('/webhook', (req, res) => {
@@ -109,7 +92,7 @@ app.get('/webhook', (req, res) => {
     if (mode && token) {
 
         // Checks the mode and token sent is correct
-        if (mode === 'subscribe' ) {
+        if (mode === 'subscribe' && token === VERIFY_TOKEN) {
 
             // Responds with the challenge token from the request
             console.log('WEBHOOK_VERIFIED');
@@ -133,8 +116,9 @@ app.get('/webhook', (req, res) => {
 //     });
 // });
 
-function handleMessage(sender_psid, received_message) {
+function handleMessage(user1, received_message) {
     let response;
+    let user2;
     pairs[user1.pid] = user2;
     pairs[user2.pid] = user1;
 
@@ -174,14 +158,14 @@ function handleMessage(sender_psid, received_message) {
         //             }]
         //         }
         //     }
-        }
-    callSendAPI(recive_psid, response);
+    }
+    callSendAPI(user2.pid, response);
 
     // Send the response message
 }
 
 function handlePostback(sender_psid, received_postback) {
-    console.log('ok');
+    console.log('ok')
     let response;
     // Get the payload for the postback
     let payload = received_postback.payload;
@@ -208,7 +192,7 @@ function callSendAPI(sender_psid, response) {
     // Send the HTTP request to the Messenger Platform
     request({
         "uri": "https://graph.facebook.com/v2.6/me/messages",
-        "qs": { "access_token": PAGE_TOKEN },
+        "qs": { "access_token": PAGE_TOKEN},
         "method": "POST",
         "json": request_body
     }, (err, res, body) => {
@@ -220,18 +204,6 @@ function callSendAPI(sender_psid, response) {
     });
 }
 
-
-function getUserProfile(senderPsid) {
-    try {
-        const userProfile = this.callUserProfileAPI(senderPsid);
-
-        for (const key in userProfile) {
-            const camelizedKey = camelCase(key);
-            const value = userProfile[key];
-            delete userProfile[key];
-            userProfile[camelizedKey] = value;
-        }
-    }}
 
 // function callUserProfileAPI(senderPsid) {
 //     let body = [];
