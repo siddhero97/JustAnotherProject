@@ -1,10 +1,12 @@
+
 export class User{
     private pid: string;
     private userName: string;
+    private hobbies: string[];
 
-    public constructor(pid: string, userName: string) {
+    public constructor(pid: string) {
         this.pid = pid;
-        this.userName = userName;
+        this.hobbies = [];
     }
 
     public getPid(): string {
@@ -20,6 +22,17 @@ export class User{
 
     public setUsername(userName: string){
         this.userName = userName;
+    }
+    public getHobbies(): string[] {
+        return this.hobbies;
+    }
+
+    public addHobby(hobby: string) {
+        this.hobbies.push(hobby);
+    }
+
+    public addHobies(hobbies: string[]) {
+        this.hobbies.concat(hobbies);
     }
 
 

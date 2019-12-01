@@ -1,6 +1,8 @@
 'use strict';
 
 // Imports dependencies and set up http server
+import {Hobby} from "./model/Hobby";
+
 const
     express = require('express'),
     bodyParser = require('body-parser'),
@@ -13,6 +15,7 @@ const config = require("./services/config");
 app.listen(process.env.PORT || 5000, () => console.log('webhook is listening'));
 let pairs = {}; // multiple pairs
 let users = {};
+let hobbies = [];
 // Creates the endpoint for our webhook
 app.post('/webhook', (req, res) => {
 
@@ -124,7 +127,7 @@ function handleMessage(sender_psid, received_message) {
 }
 
 function handlePostback(sender_psid, received_postback) {
-    console.log('ok')
+    console.log('ok');
     let response;
     // Get the payload for the postback
     let payload = received_postback.payload;
@@ -163,9 +166,9 @@ function callSendAPI(sender_psid, response) {
     });
 }
 
-static async getUserProfile(senderPsid) {
+function getUserProfile(senderPsid) {
     try {
-        const userProfile = await this.callUserProfileAPI(senderPsid);
+        const userProfile =  this.callUserProfileAPI(senderPsid);
 
         for (const key in userProfile) {
             const camelizedKey = camelCase(key);
@@ -224,11 +227,31 @@ function makePair(user1, user2){
 }
 function addNewUser(pid){
     let temp = User(pid);
-    Users[pid] = temp;
+    users[pid] = temp;
 }
 function compareUsers(user1){
-    for()
+    if(!users.contains(user1)) {
+        return;
+    }
+    let userHobbies = user1.getHobbies();
+    for(let user of users) {
+        for(let hobby of userHobbies) {
+            if(user.getHobbies().includes(hobby)) {
+                    return hobby;
+            }
+        }
+    }
+    return null;
 }
+
+function addHobbies(stringArrayHobbies){
+    let tempHobby;
+    for(let stringHobby of stringArrayHobbies) {
+        tempHobby = new Hobby(stringHobby);
+
+    }
+}
+
 
 var listener = app.listen(config.port, function() {
     console.log("Your app is listening on port " + listener.address().port);

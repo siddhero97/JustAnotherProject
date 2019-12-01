@@ -1,9 +1,9 @@
 "use strict";
 exports.__esModule = true;
 var User = /** @class */ (function () {
-    function User(pid, userName) {
+    function User(pid) {
         this.pid = pid;
-        this.userName = userName;
+        this.hobbies = [];
     }
     User.prototype.getPid = function () {
         return this.pid;
@@ -16,6 +16,12 @@ var User = /** @class */ (function () {
     };
     User.prototype.setUsername = function (userName) {
         this.userName = userName;
+    };
+    User.prototype.addHobby = function (hobby) {
+        this.hobbies.push(hobby);
+    };
+    User.prototype.addHobies = function (hobbies) {
+        this.hobbies.concat(hobbies);
     };
     return User;
 }());
