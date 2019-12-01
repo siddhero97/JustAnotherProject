@@ -148,6 +148,7 @@ function handleMessage(user1, received_message) {
     pairs[user1.pid] = user2;
     if(!user2){
         callSendAPI(user1, "Please wait while you are being matched")
+        return;
     }
     pairs[user2.pid] = user1;
 
