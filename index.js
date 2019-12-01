@@ -18,6 +18,7 @@ app.listen(process.env.PORT || 5000, () => console.log('webhook is listening'));
 let pairs = {}; // multiple pairs
 let users = {};
 let hobbies = [];
+let categories = [{}];
 // Creates the endpoint for our webhook
 app.post('/webhook', (req, res) => {
 
@@ -275,9 +276,10 @@ function compareUsers(user1){
 }
 
 function addHobbies(stringArrayHobbies){
-    let tempHobby;
     for(let stringHobby of stringArrayHobbies) {
-        tempHobby = new Hobby(stringHobby);
+        if(hobbies.includes(stringHobby)) {
+            categories[hobbies.indexOf()]
+        }
 
     }
 }

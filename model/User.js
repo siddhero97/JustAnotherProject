@@ -17,6 +17,9 @@ var User = /** @class */ (function () {
     User.prototype.setUsername = function (userName) {
         this.userName = userName;
     };
+    User.prototype.getHobbies = function () {
+        return this.hobbies;
+    };
     User.prototype.addHobby = function (hobby) {
         this.hobbies.push(hobby);
     };
